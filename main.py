@@ -1,11 +1,17 @@
-import os, sys, argparse
+import os
+import sys
+import argparse
 import requests
 import random
+import imageWriter
+import phraseGenerator
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('--blur', help='Set the image blur')
-parser.add_argument('--foo', help='Foo the program')
+parser.add_argument('--blur', default='4', help='Set the image blur (default=4)')
+parser.add_argument('--widht', default='1920', help='Set the image widht (default=1920)')
+parser.add_argument('--height', default='1080', help='Set the image height (default=1080)')
+
 args = parser.parse_args()
 
 def save_image(image):
@@ -13,15 +19,18 @@ def save_image(image):
     f.write(image)
   f.close()
 
-def request_wallpaper(URL):
-  return requests.get(URL).content
-
 def main():
-  print(str())
-  URL = 'https://picsum.photos/1920/1080.jpg'
-  PATH = '~/Repos/wallpaper-gen/image.jpg'
-  save_image(request_wallpaper(URL))
+  PATH = os.getcwd()+'/image.jpg'
+  URL = 'https://picsum.photos/'+args.widht+'/'+args.height+'.jpg'
+  
+  if args.blur:
+    URL += '?blur='+args.blur
+  save_image(requests.get(URL).content)
 
+  phrase = phraseGenerator.day_phrase()
+  if phrase:
+    imageWriter.write_text_on_image(phrase)
+  
   os.system('gsettings set org.gnome.desktop.background picture-uri '+ PATH)
 
 if __name__ == "__main__":

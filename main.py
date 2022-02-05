@@ -27,7 +27,7 @@ def main():
     URL += '?blur='+args.blur
   save_image(requests.get(URL).content)
 
-  phrase = phraseGenerator.day_phrase()
+  phrase = phraseGenerator.raul_genival_phrase()
   if phrase:
     imageWriter.write_text_on_image(phrase)
   
